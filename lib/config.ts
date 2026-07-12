@@ -7,10 +7,11 @@
  *  Comment ça marche :
  *  1. Le client remplit le formulaire sur le site.
  *  2. Au clic sur "Valider et passer au paiement", ses réponses sont
- *     sérialisées + encodées en Base64-URL, puis injectées dans l'URL de
- *     checkout Chariow via le paramètre `CHARIOW_CUSTOM_FIELD`.
- *  3. Chariow encaisse (Mobile Money), puis envoie un webhook à n8n avec
- *     ce paramètre → n8n le décode et génère la chanson via Apiframe (Suno).
+ *     enregistrées dans Supabase et un code court unique (ex. Kf9mQ2xLpT) est
+ *     injecté dans l'URL de checkout Chariow via `CHARIOW_CUSTOM_FIELD`.
+ *  3. Chariow encaisse (Mobile Money), puis envoie un webhook à n8n avec ce
+ *     code → n8n lit la commande dans Supabase et génère la chanson via
+ *     Apiframe (Suno).
  *
  *  Tu peux surcharger ces valeurs sans toucher au code en définissant les
  *  variables d'environnement correspondantes dans Vercel (voir .env.example).

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { MUSIC_STYLES, type MusicStyleId } from "@/lib/config";
-import { buildCheckoutUrl, type OrderData } from "@/lib/serialize";
+import { buildCheckoutUrl } from "@/lib/serialize";
 
 export default function OrderForm() {
   const [names, setNames] = useState("");
@@ -12,7 +12,7 @@ export default function OrderForm() {
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
 
@@ -25,20 +25,37 @@ export default function OrderForm() {
       return;
     }
 
-    const selected = MUSIC_STYLES.find((s) => s.id === style)!;
-    const data: OrderData = {
-      names: names.trim(),
-      story: story.trim(),
-      message: message.trim(),
-      style: selected.id,
-      styleTitle: selected.title,
-      createdAt: new Date().toISOString(),
-      version: 1,
-    };
-
     setSubmitting(true);
-    // Redirection vers le checkout Chariow avec les données encodées.
-    window.location.href = buildCheckoutUrl(data);
+    try {
+      // 1. On enregistre la commande côté serveur (Supabase) et on récupère
+      //    un code court unique.
+      const res = await fetch("/api/order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          names: names.trim(),
+          story: story.trim(),
+          message: message.trim(),
+          style,
+        }),
+      });
+      const payload = (await res.json().catch(() => ({}))) as {
+        code?: string;
+        error?: string;
+      };
+      if (!res.ok || !payload.code) {
+        throw new Error(payload.error ?? "Une erreur est survenue.");
+      }
+      // 2. Redirection vers le checkout Chariow avec seulement le code court.
+      window.location.href = buildCheckoutUrl(payload.code);
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Impossible de valider la commande. Réessayez.",
+      );
+      setSubmitting(false);
+    }
   };
 
   return (

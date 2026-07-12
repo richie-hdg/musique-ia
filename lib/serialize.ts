@@ -13,48 +13,36 @@ export interface OrderData {
 }
 
 /**
- * Encode une chaîne UTF-8 en Base64-URL (sûr pour une URL : pas de +, /, =).
- * Fonctionne côté navigateur ET côté Node (Vercel).
+ * Alphabet du code court : lettres (min/maj) + chiffres, sans caractères
+ * ambigus (0/O, 1/l/I) pour rester lisible si jamais quelqu'un le voit.
  */
-function toBase64Url(input: string): string {
-  const bytes = new TextEncoder().encode(input);
-  let binary = "";
-  bytes.forEach((b) => (binary += String.fromCharCode(b)));
-  const base64 =
-    typeof btoa !== "undefined"
-      ? btoa(binary)
-      : Buffer.from(input, "utf-8").toString("base64");
-  return base64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
-}
+const CODE_ALPHABET = "abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+const CODE_LENGTH = 10;
 
-/** Décode une chaîne Base64-URL vers UTF-8 (utile pour tester / côté n8n JS). */
-export function fromBase64Url(input: string): string {
-  const base64 = input.replace(/-/g, "+").replace(/_/g, "/");
-  const binary =
-    typeof atob !== "undefined"
-      ? atob(base64)
-      : Buffer.from(base64, "base64").toString("binary");
-  const bytes = Uint8Array.from(binary, (c) => c.charCodeAt(0));
-  return new TextDecoder().decode(bytes);
-}
-
-/** Sérialise les données de commande en un jeton compact et sûr pour l'URL. */
-export function serializeOrder(data: OrderData): string {
-  return toBase64Url(JSON.stringify(data));
-}
-
-/** Reconstruit les données depuis le jeton (miroir de serializeOrder). */
-export function deserializeOrder(token: string): OrderData {
-  return JSON.parse(fromBase64Url(token)) as OrderData;
+/**
+ * Génère un code court aléatoire (10 caractères) qui sert de clé pour
+ * retrouver la commande dans Supabase côté n8n. C'est CE code — et non les
+ * données brutes — qui est injecté dans le champ personnalisé Chariow.
+ * Ex. `Kf9mQ2xLpT`.
+ */
+export function generateOrderCode(): string {
+  const bytes = new Uint8Array(CODE_LENGTH);
+  // crypto est dispo côté navigateur ET côté Node 18+ (Vercel).
+  crypto.getRandomValues(bytes);
+  let code = "";
+  for (let i = 0; i < CODE_LENGTH; i++) {
+    code += CODE_ALPHABET[bytes[i] % CODE_ALPHABET.length];
+  }
+  return code;
 }
 
 /**
- * Construit l'URL finale de checkout Chariow avec les données injectées
- * dans le paramètre de champ personnalisé configuré.
+ * Construit l'URL finale de checkout Chariow en injectant UNIQUEMENT le code
+ * court dans le paramètre de champ personnalisé configuré. Résultat propre et
+ * léger, ex. `...?custom_field=Kf9mQ2xLpT`.
  */
-export function buildCheckoutUrl(data: OrderData): string {
-  const token = serializeOrder(data);
+export function buildCheckoutUrl(code: string): string {
   const url = new URL(config.chariow.checkoutUrl);
-  url.searchParams.set(config.chariow.customFieldParam, token);
+  url.searchParams.set(config.chariow.customFieldParam, code);
   return url.toString();
 }
