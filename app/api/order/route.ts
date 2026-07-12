@@ -11,7 +11,7 @@ import { generateOrderCode, type OrderData } from "@/lib/serialize";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const TABLE = "memorart_orders";
+const TABLE = "declaluvsong_orders";
 
 function supabaseEnv() {
   const url = process.env.SUPABASE_URL;
@@ -37,8 +37,10 @@ async function insertOrder(
     },
     body: JSON.stringify({
       code,
-      names: data.names,
-      story: data.story,
+      orderer_name: data.ordererName,
+      orderer_nickname: data.ordererNickname,
+      partner_name: data.partnerName,
+      partner_nickname: data.partnerNickname,
       message: data.message,
       style: data.style,
       style_title: data.styleTitle,
@@ -61,15 +63,19 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Requête invalide." }, { status: 400 });
   }
 
-  const names = (body.names ?? "").toString().trim();
-  const story = (body.story ?? "").toString().trim();
+  const ordererName = (body.ordererName ?? "").toString().trim();
+  const ordererNickname = (body.ordererNickname ?? "").toString().trim();
+  const partnerName = (body.partnerName ?? "").toString().trim();
+  const partnerNickname = (body.partnerNickname ?? "").toString().trim();
   const message = (body.message ?? "").toString().trim();
   const styleId = (body.style ?? "").toString() as MusicStyleId;
   const style = MUSIC_STYLES.find((s) => s.id === styleId);
 
-  if (!names || !story || !message || !style) {
+  // Champs obligatoires : les prénoms, le message et le style.
+  // Les surnoms sont optionnels.
+  if (!ordererName || !partnerName || !message || !style) {
     return NextResponse.json(
-      { error: "Merci de remplir tous les champs." },
+      { error: "Merci de remplir les champs obligatoires." },
       { status: 400 },
     );
   }
@@ -83,9 +89,11 @@ export async function POST(request: Request) {
   }
 
   const data: OrderData = {
-    names: names.slice(0, 120),
-    story: story.slice(0, 1500),
-    message: message.slice(0, 200),
+    ordererName: ordererName.slice(0, 80),
+    ordererNickname: ordererNickname.slice(0, 80),
+    partnerName: partnerName.slice(0, 80),
+    partnerNickname: partnerNickname.slice(0, 80),
+    message: message.slice(0, 2000),
     style: style.id,
     styleTitle: style.title,
     createdAt: new Date().toISOString(),

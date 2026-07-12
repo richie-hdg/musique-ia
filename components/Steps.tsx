@@ -23,7 +23,7 @@ export default function Steps() {
         <h2 className="font-serif text-3xl font-semibold sm:text-4xl">
           Simple comme <span className="text-gold">1, 2, 3</span>
         </h2>
-        <p className="mt-3 text-cream/60">
+        <p className="mt-3 text-ink/60">
           Moins de 2 minutes pour commander la surprise d'une vie.
         </p>
       </div>
@@ -32,7 +32,7 @@ export default function Steps() {
         {STEPS.map((step, i) => (
           <div
             key={step.title}
-            className="relative rounded-2xl border border-white/10 bg-surface p-6 transition hover:border-gold/30 hover:shadow-lg hover:shadow-black/30"
+            className="relative rounded-2xl border border-black/5 bg-surface p-6 transition hover:border-gold/30 hover:shadow-lg hover:shadow-romance/10"
           >
             <span className="absolute -top-3 -right-3 flex h-9 w-9 items-center justify-center rounded-full bg-romance text-sm font-bold text-white shadow-md shadow-romance/40">
               {i + 1}
@@ -41,7 +41,7 @@ export default function Steps() {
             <h3 className="mt-4 font-serif text-xl font-semibold text-gold">
               {step.title}
             </h3>
-            <p className="mt-2 text-sm leading-relaxed text-cream/65">
+            <p className="mt-2 text-sm leading-relaxed text-ink/65">
               {step.text}
             </p>
           </div>

@@ -3,9 +3,11 @@ import type { MusicStyleId } from "./config";
 
 /** Données brutes du formulaire de commande. */
 export interface OrderData {
-  names: string; // Prénoms & surnoms du couple
-  story: string; // Histoire d'amour
-  message: string; // Message / promesse à transmettre
+  ordererName: string; // Prénom de la personne qui commande
+  ordererNickname: string; // Son surnom (optionnel)
+  partnerName: string; // Prénom de la personne à qui la chanson est dédiée
+  partnerNickname: string; // Surnom de cette personne (optionnel)
+  message: string; // Message à transmettre + histoire d'amour
   style: MusicStyleId; // Style musical choisi
   styleTitle: string; // Libellé lisible du style (confort côté n8n)
   createdAt: string; // ISO — utile pour le suivi

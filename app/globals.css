@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 html {
@@ -11,29 +11,30 @@ html {
 }
 
 body {
-  background-color: #0b0914;
-  color: #f8f9fa;
+  background-color: #fff6f1;
+  color: #2b1a20;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
-/* Halo lumineux d'ambiance nocturne */
+/* Halo lumineux d'ambiance romantique (clair) */
 .romantic-glow {
   background:
-    radial-gradient(60% 55% at 50% 0%, rgba(233, 69, 96, 0.18) 0%, transparent 60%),
-    radial-gradient(45% 45% at 85% 20%, rgba(223, 177, 91, 0.1) 0%, transparent 55%),
-    radial-gradient(50% 50% at 10% 30%, rgba(233, 69, 96, 0.08) 0%, transparent 55%);
+    radial-gradient(65% 55% at 50% 0%, rgba(219, 46, 91, 0.12) 0%, transparent 62%),
+    radial-gradient(48% 45% at 85% 18%, rgba(181, 132, 51, 0.12) 0%, transparent 58%),
+    radial-gradient(52% 50% at 8% 32%, rgba(219, 46, 91, 0.08) 0%, transparent 58%),
+    linear-gradient(180deg, #fff0ea 0%, #fff6f1 55%);
 }
 
 /* Titre or "brossé" scintillant */
 .text-gold-shimmer {
   background: linear-gradient(
     100deg,
-    #dfb15b 0%,
-    #f6e3b3 25%,
-    #dfb15b 50%,
-    #b98f3e 75%,
-    #dfb15b 100%
+    #b58433 0%,
+    #e0b45f 25%,
+    #b58433 50%,
+    #8f6522 75%,
+    #b58433 100%
   );
   background-size: 200% auto;
   -webkit-background-clip: text;
@@ -42,11 +43,11 @@ body {
   animation: shimmer 6s linear infinite;
 }
 
-/* Champs de formulaire */
+/* Champs de formulaire (clairs) */
 .field {
-  @apply w-full rounded-xl border border-white/10 bg-night/60 px-4 py-3.5 text-cream
-    placeholder:text-cream/35 outline-none transition
-    focus:border-romance/60 focus:ring-2 focus:ring-romance/25;
+  @apply w-full rounded-xl border border-black/10 bg-white px-4 py-3.5 text-ink
+    placeholder:text-ink/35 outline-none transition
+    focus:border-romance/60 focus:ring-2 focus:ring-romance/20;
 }
 
 /* Scrollbar discrète */
@@ -54,9 +55,9 @@ body {
   width: 10px;
 }
 ::-webkit-scrollbar-track {
-  background: #0b0914;
+  background: #fff0ea;
 }
 ::-webkit-scrollbar-thumb {
-  background: #2a2740;
+  background: #e7c9bd;
   border-radius: 9999px;
 }

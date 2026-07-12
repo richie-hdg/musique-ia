@@ -29,11 +29,11 @@ export default function Hero() {
           </span>
         </h1>
 
-        <p className="mt-6 max-w-2xl text-base leading-relaxed text-cream/70 animate-fade-up [animation-delay:0.2s] sm:text-lg">
+        <p className="mt-6 max-w-2xl text-base leading-relaxed text-ink/70 animate-fade-up [animation-delay:0.2s] sm:text-lg">
           Une surprise inoubliable, entièrement composée à partir de{" "}
-          <span className="text-cream">votre histoire</span>. Imaginez les larmes
+          <span className="text-ink">votre histoire</span>. Imaginez les larmes
           d'émotion couler sur son visage lorsqu'il — ou elle — comprendra que{" "}
-          <span className="text-cream">chaque mot parle de vous deux</span>.
+          <span className="text-ink">chaque mot parle de vous deux</span>.
         </p>
 
         <a
@@ -44,7 +44,7 @@ export default function Hero() {
           <span className="transition group-hover:translate-y-0.5">↓</span>
         </a>
 
-        <p className="mt-5 text-sm text-cream/45 animate-fade-up [animation-delay:0.4s]">
+        <p className="mt-5 text-sm text-ink/50 animate-fade-up [animation-delay:0.4s]">
           🎧 Prête en moins de 24h &nbsp;•&nbsp; 📲 Livrée directement sur
           WhatsApp
         </p>

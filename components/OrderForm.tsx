@@ -5,8 +5,10 @@ import { MUSIC_STYLES, type MusicStyleId } from "@/lib/config";
 import { buildCheckoutUrl } from "@/lib/serialize";
 
 export default function OrderForm() {
-  const [names, setNames] = useState("");
-  const [story, setStory] = useState("");
+  const [ordererName, setOrdererName] = useState("");
+  const [ordererNickname, setOrdererNickname] = useState("");
+  const [partnerName, setPartnerName] = useState("");
+  const [partnerNickname, setPartnerNickname] = useState("");
   const [message, setMessage] = useState("");
   const [style, setStyle] = useState<MusicStyleId | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -16,8 +18,8 @@ export default function OrderForm() {
     e.preventDefault();
     setError(null);
 
-    if (!names.trim() || !story.trim() || !message.trim()) {
-      setError("Merci de remplir tous les champs pour créer votre chanson. 💫");
+    if (!ordererName.trim() || !partnerName.trim() || !message.trim()) {
+      setError("Merci de remplir les champs obligatoires pour créer votre chanson. 💫");
       return;
     }
     if (!style) {
@@ -33,8 +35,10 @@ export default function OrderForm() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          names: names.trim(),
-          story: story.trim(),
+          ordererName: ordererName.trim(),
+          ordererNickname: ordererNickname.trim(),
+          partnerName: partnerName.trim(),
+          partnerNickname: partnerNickname.trim(),
           message: message.trim(),
           style,
         }),
@@ -65,7 +69,7 @@ export default function OrderForm() {
           <h2 className="font-serif text-3xl font-semibold sm:text-4xl">
             Composons <span className="text-gold">votre chanson</span>
           </h2>
-          <p className="mt-3 text-cream/60">
+          <p className="mt-3 text-ink/60">
             Racontez-nous l'essentiel. Plus c'est sincère, plus la chanson
             touchera au cœur.
           </p>
@@ -73,59 +77,99 @@ export default function OrderForm() {
 
         <form
           onSubmit={handleSubmit}
-          className="rounded-3xl border border-white/10 bg-surface p-6 shadow-2xl shadow-black/40 sm:p-8"
+          className="rounded-3xl border border-black/5 bg-surface p-6 shadow-xl shadow-romance/10 sm:p-8"
         >
-          {/* Champ 1 : Prénoms & surnoms */}
-          <div className="mb-6">
-            <label className="mb-2 block text-sm font-medium text-cream">
-              Vos prénoms &amp; surnoms 💞
-            </label>
-            <input
-              type="text"
-              value={names}
-              onChange={(e) => setNames(e.target.value)}
-              placeholder='Ex : Ibrahim & Fatou "Ma Reine"'
-              className="field"
-              maxLength={120}
-            />
+          {/* Bloc 1 : Qui commande */}
+          <p className="mb-4 text-sm font-semibold uppercase tracking-wide text-romance">
+            Vous
+          </p>
+          <div className="mb-6 grid gap-4 sm:grid-cols-2">
+            <div>
+              <label className="mb-2 block text-sm font-medium text-ink">
+                Votre prénom <span className="text-romance">*</span>
+              </label>
+              <input
+                type="text"
+                value={ordererName}
+                onChange={(e) => setOrdererName(e.target.value)}
+                placeholder="Ex : Ibrahim"
+                className="field"
+                maxLength={80}
+              />
+            </div>
+            <div>
+              <label className="mb-2 block text-sm font-medium text-ink">
+                Votre surnom{" "}
+                <span className="text-ink/40">(optionnel)</span>
+              </label>
+              <input
+                type="text"
+                value={ordererNickname}
+                onChange={(e) => setOrdererNickname(e.target.value)}
+                placeholder="Ex : Ton Roi 👑"
+                className="field"
+                maxLength={80}
+              />
+            </div>
           </div>
 
-          {/* Champ 2 : Histoire d'amour */}
-          <div className="mb-6">
-            <label className="mb-2 block text-sm font-medium text-cream">
-              Votre histoire d'amour ✨
+          {/* Bloc 2 : La personne à qui la chanson est dédiée */}
+          <p className="mb-4 text-sm font-semibold uppercase tracking-wide text-romance">
+            Votre moitié 💞
+          </p>
+          <div className="mb-6 grid gap-4 sm:grid-cols-2">
+            <div>
+              <label className="mb-2 block text-sm font-medium text-ink">
+                Son prénom <span className="text-romance">*</span>
+              </label>
+              <input
+                type="text"
+                value={partnerName}
+                onChange={(e) => setPartnerName(e.target.value)}
+                placeholder="Ex : Fatou"
+                className="field"
+                maxLength={80}
+              />
+            </div>
+            <div>
+              <label className="mb-2 block text-sm font-medium text-ink">
+                Son surnom{" "}
+                <span className="text-ink/40">(optionnel)</span>
+              </label>
+              <input
+                type="text"
+                value={partnerNickname}
+                onChange={(e) => setPartnerNickname(e.target.value)}
+                placeholder="Ex : Ma Reine ✨"
+                className="field"
+                maxLength={80}
+              />
+            </div>
+          </div>
+
+          {/* Bloc 3 : Le message + l'histoire */}
+          <div className="mb-8">
+            <label className="mb-2 block text-sm font-medium text-ink">
+              Le message à transmettre &amp; votre histoire d'amour{" "}
+              <span className="text-romance">*</span>
             </label>
             <textarea
-              value={story}
-              onChange={(e) => setStory(e.target.value)}
-              placeholder="Où vous êtes-vous rencontrés ? Une épreuve traversée ensemble ? Un souvenir qui vous fait sourire à chaque fois…"
-              className="field min-h-[140px] resize-y"
-              maxLength={1500}
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              placeholder="Que voulez-vous lui dire dans cette chanson ? Racontez votre histoire : votre rencontre, un souvenir fort, une épreuve traversée ensemble, une promesse… Plus c'est personnel, plus la chanson sera touchante."
+              className="field min-h-[170px] resize-y"
+              maxLength={2000}
             />
-            <p className="mt-1.5 text-right text-xs text-cream/35">
-              {story.length}/1500
+            <p className="mt-1.5 text-right text-xs text-ink/40">
+              {message.length}/2000
             </p>
           </div>
 
-          {/* Champ 3 : Message / promesse */}
+          {/* Bloc 4 : Sélecteur de style musical */}
           <div className="mb-8">
-            <label className="mb-2 block text-sm font-medium text-cream">
-              Le message ou la promesse à transmettre 🌹
-            </label>
-            <input
-              type="text"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              placeholder="Ex : Pour ses 30 ans, lui dire merci d'être mon pilier"
-              className="field"
-              maxLength={200}
-            />
-          </div>
-
-          {/* Champ 4 : Sélecteur de style musical */}
-          <div className="mb-8">
-            <label className="mb-3 block text-sm font-medium text-cream">
-              Choisissez l'ambiance musicale 🎶
+            <label className="mb-3 block text-sm font-medium text-ink">
+              Choisissez l'ambiance musicale{" "}
+              <span className="text-romance">*</span>
             </label>
             <div className="grid gap-3 sm:grid-cols-2">
               {MUSIC_STYLES.map((s) => {
@@ -139,19 +183,19 @@ export default function OrderForm() {
                     className={`group flex items-start gap-3 rounded-2xl border p-4 text-left transition ${
                       active
                         ? "border-romance bg-romance/10 shadow-md shadow-romance/20"
-                        : "border-white/10 bg-night/40 hover:border-gold/30 hover:bg-night/70"
+                        : "border-black/10 bg-white/60 hover:border-gold/50 hover:bg-white"
                     }`}
                   >
                     <span className="text-2xl">{s.emoji}</span>
                     <span className="flex-1">
                       <span
                         className={`block text-sm font-semibold ${
-                          active ? "text-romance" : "text-cream"
+                          active ? "text-romance" : "text-ink"
                         }`}
                       >
                         {s.title}
                       </span>
-                      <span className="mt-0.5 block text-xs leading-snug text-cream/55">
+                      <span className="mt-0.5 block text-xs leading-snug text-ink/55">
                         {s.subtitle}
                       </span>
                     </span>
@@ -159,7 +203,7 @@ export default function OrderForm() {
                       className={`mt-0.5 flex h-5 w-5 flex-none items-center justify-center rounded-full border text-[11px] ${
                         active
                           ? "border-romance bg-romance text-white"
-                          : "border-white/20 text-transparent"
+                          : "border-black/20 text-transparent"
                       }`}
                     >
                       ✓
@@ -184,7 +228,7 @@ export default function OrderForm() {
             {submitting ? "Redirection sécurisée…" : "Valider et passer au paiement →"}
           </button>
 
-          <p className="mt-4 text-center text-xs text-cream/45">
+          <p className="mt-4 text-center text-xs text-ink/45">
             🔒 Paiement 100 % sécurisé par Mobile Money (Orange, Moov, MTN, Wave)
           </p>
         </form>

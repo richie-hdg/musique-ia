@@ -2,7 +2,7 @@
 
 Landing page + formulaire de commande pour la génération de chansons d'amour/surprise personnalisées (marché ouest-africain). Le site capture l'histoire du client, l'**enregistre dans Supabase**, puis redirige vers le paiement **Chariow** (Mobile Money) avec un simple **code court** en champ personnalisé. La génération (Suno via Apiframe) et la livraison (WhatsApp) sont gérées côté **n8n**.
 
-Univers visuel : **Midnight Romance & Gold** — nocturne, intimiste, touches dorées.
+Univers visuel : **Blush Romance & Gold** — clair, chaleureux, romantique, touches dorées.
 
 ---
 
@@ -29,7 +29,7 @@ lib/
   config.ts           ⚙️ SEUL FICHIER À ÉDITER : URL Chariow, styles musicaux
   serialize.ts        Génération du code court + construction de l'URL Chariow
 supabase/
-  migration.sql       Table memorart_orders (à exécuter une fois dans Supabase)
+  migration.sql       Table declaluvsong_orders (à exécuter une fois dans Supabase)
 .env.example          Variables d'environnement du site
 ```
 
@@ -54,7 +54,7 @@ Définis ces variables dans Vercel (et dans `.env.local` en dev) :
 | `NEXT_PUBLIC_CHARIOW_CUSTOM_FIELD` | Nom du paramètre de champ perso (souvent `custom_field` ou `cf`) |
 | `NEXT_PUBLIC_SUPPORT_WHATSAPP` | (optionnel) numéro WhatsApp support, format international sans `+` |
 
-**Avant tout :** exécute une fois `supabase/migration.sql` dans le SQL Editor de ton projet Supabase (crée la table `memorart_orders`).
+**Avant tout :** exécute une fois `supabase/migration.sql` dans le SQL Editor de ton projet Supabase (crée la table `declaluvsong_orders`).
 
 **Fonctionnement :** au clic sur « Valider et passer au paiement », le site enregistre la commande dans Supabase via `POST /api/order` et récupère un **code court de 10 caractères** (ex. `Kf9mQ2xLpT`). Seul ce code est injecté dans le champ perso Chariow — propre et discret pour le client. Exemple d'URL générée :
 
@@ -69,13 +69,13 @@ https://ta-boutique.chariow.store/checkout/chanson?custom_field=Kf9mQ2xLpT
 Le webhook Chariow te renverra le **code court**. Interroge Supabase avec ce code (nœud *HTTP Request* ou *Supabase* dans n8n) :
 
 ```
-GET {{SUPABASE_URL}}/rest/v1/memorart_orders?code=eq.{{ $json.custom_field }}&select=*
+GET {{SUPABASE_URL}}/rest/v1/declaluvsong_orders?code=eq.{{ $json.custom_field }}&select=*
 Headers:
   apikey: {{SUPABASE_SERVICE_ROLE_KEY}}
   Authorization: Bearer {{SUPABASE_SERVICE_ROLE_KEY}}
 ```
 
-La réponse contient `{ code, names, story, message, style, style_title, status, created_at }`.
+La réponse contient `{ code, orderer_name, orderer_nickname, partner_name, partner_nickname, message, style, style_title, status, created_at }`.
 
 Le champ `style` (id technique : `afro-soul`, `kizomba`, `acoustique`, `rumba`, `afrobeats`, `gospel`) sert à choisir le prompt de style Suno ; `style_title` est le libellé lisible. Pense à passer `status` à `paid` puis `delivered` au fil du workflow.
 
@@ -97,7 +97,7 @@ Le champ `style` (id technique : `afro-soul`, `kizomba`, `acoustique`, `rumba`, 
 ### Choix validés
 - **Suno via Apiframe** (pas Google Lyria, pas PiAPI) : Suno structure des chansons commerciales complètes en français/argots ; Apiframe = le plus stable/documenté, paiement par recharge de crédits.
 - **WhatsApp = Green API** (passerelle non-officielle) : pas de vérification Meta Business, envoi de MP3 natif. Migration possible vers l'API Meta officielle plus tard si volume élevé.
-- **Supabase : réutiliser un projet existant.** Free tier = 2 projets actifs. Pas besoin d'un 3e projet : la table **`memorart_orders`** (données de commande, clé = code court) + un **bucket `memorart-songs`** (MP3 de secours) dans un projet déjà actif suffisent. Isolation propre, 0 coût.
+- **Supabase : réutiliser un projet existant.** Free tier = 2 projets actifs. Pas besoin d'un 3e projet : la table **`declaluvsong_orders`** (données de commande, clé = code court) + un **bucket `declaluvsong-songs`** (MP3 de secours) dans un projet déjà actif suffisent. Isolation propre, 0 coût.
 
 ### Variables d'environnement de l'écosystème (hors site — vivent dans n8n / services)
 Présentes dans l'environnement : `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `CHARIOW_N8N_API`, `MCP_CHARIOW_API`, `N8N_API_KEY`, `N8N_BASE_URL`, `GREEN_API_TOKEN`, `BREVO_API_KEY` (email), `FACEBOOK_CAPI_ACCESS_TOKEN` (tracking pub), `CHATWOOT_*` (support), `TELEGRAM_*` (notifs admin, dont un bot Memorart), `UPTIMEROBOT_API_KEY`, `VERCEL_API_TOKEN`.

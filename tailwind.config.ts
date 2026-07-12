@@ -8,12 +8,13 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Univers "Midnight Romance & Gold"
-        night: "#0B0914", // Fond de page
-        surface: "#131124", // Cartes & sections
-        romance: "#E94560", // Accent principal (rose fuchsia passion)
-        gold: "#DFB15B", // Accent secondaire (or brossé)
-        cream: "#F8F9FA", // Texte
+        // Univers "Blush Romance & Gold" — clair, chaleureux, romantique
+        night: "#FFF6F1", // Fond de page (blush crème)
+        surface: "#FFFFFF", // Cartes & sections
+        romance: "#DB2E5B", // Accent principal (rose framboise passion)
+        gold: "#B58433", // Accent secondaire (or profond, lisible sur clair)
+        cream: "#FFFFFF", // Surfaces claires / texte sur fond coloré
+        ink: "#2B1A20", // Texte principal (prune profond chaleureux)
       },
       fontFamily: {
         serif: ["var(--font-playfair)", "Georgia", "serif"],
