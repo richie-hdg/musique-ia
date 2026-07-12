@@ -1,0 +1,62 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #0b0914;
+  color: #f8f9fa;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Halo lumineux d'ambiance nocturne */
+.romantic-glow {
+  background:
+    radial-gradient(60% 55% at 50% 0%, rgba(233, 69, 96, 0.18) 0%, transparent 60%),
+    radial-gradient(45% 45% at 85% 20%, rgba(223, 177, 91, 0.1) 0%, transparent 55%),
+    radial-gradient(50% 50% at 10% 30%, rgba(233, 69, 96, 0.08) 0%, transparent 55%);
+}
+
+/* Titre or "brossé" scintillant */
+.text-gold-shimmer {
+  background: linear-gradient(
+    100deg,
+    #dfb15b 0%,
+    #f6e3b3 25%,
+    #dfb15b 50%,
+    #b98f3e 75%,
+    #dfb15b 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 6s linear infinite;
+}
+
+/* Champs de formulaire */
+.field {
+  @apply w-full rounded-xl border border-white/10 bg-night/60 px-4 py-3.5 text-cream
+    placeholder:text-cream/35 outline-none transition
+    focus:border-romance/60 focus:ring-2 focus:ring-romance/25;
+}
+
+/* Scrollbar discrète */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #0b0914;
+}
+::-webkit-scrollbar-thumb {
+  background: #2a2740;
+  border-radius: 9999px;
+}
